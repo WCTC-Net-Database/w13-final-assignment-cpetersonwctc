@@ -23,32 +23,70 @@ public class PlayerService
             return;
         }
 
-        _outputService.WriteLine($"{player.Name} attacks {target.Name} with a {player.Equipment.Weapon.Name} dealing {player.Equipment.Weapon.Attack} damage!");
+        _outputService.WriteLine($"{player.Name} attacks {target.Name} with a {player.Equipment.Weapon.Name} dealing {player.Equipment.Weapon.Attack} damage!\n");
         target.Health -= player.Equipment.Weapon.Attack;
-        _outputService.WriteLine($"{target.Name} has {target.Health} health remaining.");
+        _outputService.WriteLine($"{target.Name} has {target.Health} health remaining.\n");
     }
 
-    public void UseAbility(IPlayer player, IAbility ability, ITargetable target)
+    public (String Status, int Amount, int Duration) UseAbility(IPlayer player, ITargetable target)
     {
-        if (player.Abilities?.Contains(ability) == true)
+
+        var playerAbilities = player.Abilities.ToList();
+        _outputService.WriteLine("Abilities: ");
+        if (playerAbilities.Any())
         {
-            _abilityService.Activate(ability, player, target);
+            for (int a = 0; a < playerAbilities.Count; a++)
+            {
+                _outputService.WriteLine($"{a + 1}. {playerAbilities[a].Name} - {playerAbilities[a].Description}");
+            }
+            _outputService.WriteLine("What ability will you use?: \n");
+            var chosenAbility = Console.ReadLine();
+            try
+            {
+                var toInt = Convert.ToInt32(chosenAbility) - 1;
+                if (toInt >= 0 && toInt < playerAbilities.Count())
+                {
+                    return _abilityService.Activate(playerAbilities[toInt], player, target);
+                }
+            }
+            catch { }
         }
         else
         {
-            _outputService.WriteLine($"{player.Name} does not have the ability {ability.Name}!");
+            _outputService.WriteLine("You have no abiliies...");
         }
+        return ("NA",0,0);
     }
 
-    public void EquipItemFromInventory(IPlayer player, Item item)
+    public void resetPlayer(Player player)
     {
-        if (player.Inventory?.Items.Contains(item) == true)
+        if (player.Equipment != null)
         {
-            player.Equipment?.EquipItem(item);
+            player.Equipment.Weapon = null;
+            player.Equipment.Armor = null;
         }
-        else
+        if (player.Inventory.BridgeItems != null)
         {
-            _outputService.WriteLine($"{player.Name} does not have the item {item.Name} in their inventory!");
+            player.Inventory.BridgeItems.Clear();
         }
+        
+        player.Mana = 0;
+        player.MaxHealth = 100;
+        player.Health = 100;
+        player.Experience = 0;
+        player.Abilities.Clear();
+        player.Room = null;
+        player.RoomId = 0;
     }
+    //public void EquipItemFromInventory(IPlayer player, Item item)
+    //{
+    //    if (player.Inventory?.Items.Contains(item) == true)
+    //    {
+    //        player.Equipment?.EquipItem(item);
+    //    }
+    //    else
+    //    {
+    //        _outputService.WriteLine($"{player.Name} does not have the item {item.Name} in their inventory!");
+    //    }
+    //}
 }

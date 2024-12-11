@@ -84,6 +84,11 @@ public class OutputManager
         return userInput;
     }
 
+    public void ClearScreen()
+    {
+        _logContent.Clear();
+    }
+
 
 
 

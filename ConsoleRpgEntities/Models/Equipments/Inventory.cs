@@ -12,7 +12,8 @@ namespace ConsoleRpgEntities.Models.Equipments
 
         // Navigation properties
         public virtual Player Player { get; set; }
-        public virtual ICollection<Item> Items { get; set; }
+
+        public virtual ICollection<InventoryItemBridge> BridgeItems { get; set; }
 
     }
 

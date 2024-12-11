@@ -8,11 +8,11 @@ namespace ConsoleRpgEntities.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "InventoryId",
-                table: "Items",
-                type: "int",
-                nullable: true);
+            //migrationBuilder.AddColumn<int>(
+            //    name: "InventoryId",
+            //    table: "Items",
+            //    type: "int",
+            //    nullable: true);
 
             migrationBuilder.AddColumn<int>(
                 name: "Value",
@@ -47,10 +47,10 @@ namespace ConsoleRpgEntities.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Items_InventoryId",
-                table: "Items",
-                column: "InventoryId");
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_Items_InventoryId",
+            //    table: "Items",
+            //    column: "InventoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Inventory_PlayerId",
@@ -58,30 +58,30 @@ namespace ConsoleRpgEntities.Migrations
                 column: "PlayerId",
                 unique: true);
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Items_Inventory_InventoryId",
-                table: "Items",
-                column: "InventoryId",
-                principalTable: "Inventory",
-                principalColumn: "Id");
+            //migrationBuilder.AddForeignKey(
+            //    name: "FK_Items_Inventory_InventoryId",
+            //    table: "Items",
+            //    column: "InventoryId",
+            //    principalTable: "Inventory",
+            //    principalColumn: "Id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Items_Inventory_InventoryId",
-                table: "Items");
+            //migrationBuilder.DropForeignKey(
+            //    name: "FK_Items_Inventory_InventoryId",
+            //    table: "Items");
 
             migrationBuilder.DropTable(
                 name: "Inventory");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Items_InventoryId",
-                table: "Items");
+            //migrationBuilder.DropIndex(
+            //    name: "IX_Items_InventoryId",
+            //    table: "Items");
 
-            migrationBuilder.DropColumn(
-                name: "InventoryId",
-                table: "Items");
+            //migrationBuilder.DropColumn(
+            //    name: "InventoryId",
+            //    table: "Items");
 
             migrationBuilder.DropColumn(
                 name: "Value",

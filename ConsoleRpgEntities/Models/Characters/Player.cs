@@ -11,6 +11,8 @@ namespace ConsoleRpgEntities.Models.Characters
         public string Name { get; set; }
         public int Experience { get; set; }
         public int Health { get; set; }
+        public int MaxHealth { get; set; }
+        public int Mana { get; set; }
 
         // Foreign key
         public int? EquipmentId { get; set; }
@@ -19,7 +21,7 @@ namespace ConsoleRpgEntities.Models.Characters
         public virtual Inventory Inventory { get; set; }
         public virtual Equipment Equipment { get; set; }
         public virtual Room Room { get; set; }
-        public virtual int? RoomId { get; set; }
+        public virtual int RoomId { get; set; }
         public virtual ICollection<Ability> Abilities { get; set; }
     }
 

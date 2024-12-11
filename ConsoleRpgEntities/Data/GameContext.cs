@@ -14,6 +14,8 @@ namespace ConsoleRpgEntities.Data
         public DbSet<Ability> Abilities { get; set; }
         public DbSet<Item> Items { get; set; }
         public DbSet<Equipment> Equipments { get; set; }
+        public DbSet<Inventory> Inventories { get; set; }
+        public DbSet<InventoryItemBridge> InventoryItemBridge { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public GameContext(DbContextOptions<GameContext> options) : base(options)
         {
@@ -29,7 +31,13 @@ namespace ConsoleRpgEntities.Data
             // Configure TPH for Ability hierarchy
             modelBuilder.Entity<Ability>()
                 .HasDiscriminator<string>(pa=>pa.AbilityType)
-                .HasValue<ShoveAbility>("ShoveAbility");
+                .HasValue<AttackAbility>("AttackAbility");
+            modelBuilder.Entity<Ability>()
+                .HasDiscriminator<string>(pa => pa.AbilityType)
+                .HasValue<DefenseAbility>("DefenseAbility");
+            modelBuilder.Entity<Ability>()
+                .HasDiscriminator<string>(pa => pa.AbilityType)
+                .HasValue<MagicAbility>("MagicAbility");
 
             // Configure many-to-many relationship
             modelBuilder.Entity<Player>()

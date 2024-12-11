@@ -4,6 +4,7 @@ using ConsoleRpgEntities.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ConsoleRpgEntities.Migrations
 {
     [DbContext(typeof(GameContext))]
-    partial class GameContextModelSnapshot : ModelSnapshot
+    [Migration("20241207210001_ItemInventoryBridgeAdded")]
+    partial class ItemInventoryBridgeAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,9 +55,6 @@ namespace ConsoleRpgEntities.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Distance")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -78,13 +77,7 @@ namespace ConsoleRpgEntities.Migrations
                     b.Property<int>("AggressionLevel")
                         .HasColumnType("int");
 
-                    b.Property<int>("BaseDamage")
-                        .HasColumnType("int");
-
                     b.Property<int>("Health")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MaxHealth")
                         .HasColumnType("int");
 
                     b.Property<string>("MonsterType")
@@ -94,9 +87,6 @@ namespace ConsoleRpgEntities.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RoomId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -122,17 +112,11 @@ namespace ConsoleRpgEntities.Migrations
                     b.Property<int>("Health")
                         .HasColumnType("int");
 
-                    b.Property<int>("Mana")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MaxHealth")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RoomId")
+                    b.Property<int?>("RoomId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -223,6 +207,9 @@ namespace ConsoleRpgEntities.Migrations
                     b.Property<int>("Defense")
                         .HasColumnType("int");
 
+                    b.Property<int?>("InventoryId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -238,6 +225,8 @@ namespace ConsoleRpgEntities.Migrations
                         .HasColumnType("decimal(5,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("InventoryId");
 
                     b.ToTable("Items");
                 });
@@ -286,44 +275,17 @@ namespace ConsoleRpgEntities.Migrations
                     b.ToTable("Rooms");
                 });
 
-            modelBuilder.Entity("ConsoleRpgEntities.Models.Abilities.PlayerAbilities.AttackAbility", b =>
+            modelBuilder.Entity("ConsoleRpgEntities.Models.Abilities.PlayerAbilities.ShoveAbility", b =>
                 {
                     b.HasBaseType("ConsoleRpgEntities.Models.Abilities.PlayerAbilities.Ability");
 
                     b.Property<int>("Damage")
                         .HasColumnType("int");
 
-                    b.HasDiscriminator().HasValue("AttackAbility");
-                });
-
-            modelBuilder.Entity("ConsoleRpgEntities.Models.Abilities.PlayerAbilities.DefenseAbility", b =>
-                {
-                    b.HasBaseType("ConsoleRpgEntities.Models.Abilities.PlayerAbilities.Ability");
-
-                    b.Property<int>("DefenseBonus")
+                    b.Property<int>("Distance")
                         .HasColumnType("int");
 
-                    b.HasDiscriminator().HasValue("DefenseAbility");
-                });
-
-            modelBuilder.Entity("ConsoleRpgEntities.Models.Abilities.PlayerAbilities.MagicAbility", b =>
-                {
-                    b.HasBaseType("ConsoleRpgEntities.Models.Abilities.PlayerAbilities.Ability");
-
-                    b.Property<int>("Damage")
-                        .HasColumnType("int")
-                        .HasColumnName("MagicAbility_Damage");
-
-                    b.Property<int>("Defense")
-                        .HasColumnType("int");
-
-                    b.Property<int>("HealsFor")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ManaCost")
-                        .HasColumnType("int");
-
-                    b.HasDiscriminator().HasValue("MagicAbility");
+                    b.HasDiscriminator().HasValue("ShoveAbility");
                 });
 
             modelBuilder.Entity("ConsoleRpgEntities.Models.Characters.Monsters.Goblin", b =>
@@ -359,9 +321,7 @@ namespace ConsoleRpgEntities.Migrations
 
                     b.HasOne("ConsoleRpgEntities.Models.Rooms.Room", "Room")
                         .WithMany("Players")
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RoomId");
 
                     b.Navigation("Equipment");
 
@@ -396,21 +356,28 @@ namespace ConsoleRpgEntities.Migrations
 
             modelBuilder.Entity("ConsoleRpgEntities.Models.Equipments.InventoryItemBridge", b =>
                 {
-                    b.HasOne("ConsoleRpgEntities.Models.Equipments.Inventory", "Inventory")
-                        .WithMany("BridgeItems")
+                    b.HasOne("ConsoleRpgEntities.Models.Equipments.Inventory", "inventory")
+                        .WithMany()
                         .HasForeignKey("InventoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ConsoleRpgEntities.Models.Equipments.Item", "Item")
+                    b.HasOne("ConsoleRpgEntities.Models.Equipments.Item", "item")
                         .WithMany()
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Inventory");
+                    b.Navigation("inventory");
 
-                    b.Navigation("Item");
+                    b.Navigation("item");
+                });
+
+            modelBuilder.Entity("ConsoleRpgEntities.Models.Equipments.Item", b =>
+                {
+                    b.HasOne("ConsoleRpgEntities.Models.Equipments.Inventory", null)
+                        .WithMany("Items")
+                        .HasForeignKey("InventoryId");
                 });
 
             modelBuilder.Entity("ConsoleRpgEntities.Models.Rooms.Room", b =>
@@ -448,7 +415,7 @@ namespace ConsoleRpgEntities.Migrations
 
             modelBuilder.Entity("ConsoleRpgEntities.Models.Equipments.Inventory", b =>
                 {
-                    b.Navigation("BridgeItems");
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("ConsoleRpgEntities.Models.Rooms.Room", b =>

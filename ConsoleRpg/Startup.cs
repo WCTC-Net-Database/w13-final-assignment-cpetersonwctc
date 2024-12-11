@@ -51,5 +51,6 @@ public static class Startup
         services.AddSingleton<PlayerService>();
         services.AddSingleton<AbilityService>();
         services.AddSingleton<IOutputService, OutputService>();
+        services.AddSingleton<DevMenu>();
     }
 }
