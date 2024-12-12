@@ -5,6 +5,9 @@ using ConsoleRpgEntities.Models.Equipments;
 using ConsoleRpgEntities.Models.Rooms;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.VisualBasic;
+using System.Collections;
+using System.Collections.Generic;
 using System.Numerics;
 using System.Security.Cryptography;
 using System.Xml.Linq;
@@ -285,7 +288,7 @@ public class DevMenu
     {
         _outputManager.ClearScreen();
         var abilityName = _outputManager.GetUserInput("What will the ability name be? (anything):");
-        
+        _context.SaveChanges();
         var allPlayers = _context.Players.ToList();
         Player player;
         for (int p = 0; p < allPlayers.Count; p++)
@@ -295,7 +298,7 @@ public class DevMenu
         while (true)
         {
             var chosen = promptInt("What player will the ability be made for? (number): ")-1;
-            if (chosen > 0 && chosen < allPlayers.Count)
+            if (chosen >= 0 && chosen < allPlayers.Count)
             {
                 player = allPlayers[chosen];
                 break;
@@ -312,6 +315,7 @@ public class DevMenu
         _outputManager.AddLogEntry("1. Attack Ability");
         _outputManager.AddLogEntry("2. Defense Ability");
         _outputManager.AddLogEntry("3. Magic Ability");
+        _context.SaveChanges();
         while (true)
         {
             var input = _outputManager.GetUserInput("What type of ability will it be?: (number)");
@@ -321,12 +325,14 @@ public class DevMenu
                     var attackDamage = promptInt("How much damage will it do? (number)");
                     AttackAbility attackAbility = new AttackAbility {Name = abilityName, Description = abilityDesc, Distance = abilityDist, Damage = attackDamage, AbilityType = "AttackAbility"};
                     _context.Abilities.Add(attackAbility);
+                    _context.SaveChanges();
                     player.Abilities.Add(attackAbility);
                     break;
                 case "2":
                     var defenseDefense = promptInt("How much defense will it give? (number)");
                     DefenseAbility defenseAbility = new DefenseAbility { Name = abilityName, Description = abilityDesc, Distance = abilityDist, DefenseBonus = defenseDefense, AbilityType = "DefenseAbility" };
                     _context.Abilities.Add(defenseAbility);
+                    _context.SaveChanges();
                     player.Abilities.Add(defenseAbility);
                     break;
                 case "3":
@@ -336,6 +342,7 @@ public class DevMenu
                     var magicCost = promptInt("How much mana will it cost? (number)");
                     MagicAbility magicAbility = new MagicAbility { Name = abilityName, Description = abilityDesc, Distance = abilityDist, Damage = magicDamage, Defense = magicDefense, HealsFor = magicHeal, ManaCost = magicCost, AbilityType = "MagicAbility" };
                     _context.Abilities.Add(magicAbility);
+                    _context.SaveChanges();
                     player.Abilities.Add(magicAbility);
                     break;
                 default:
@@ -549,7 +556,10 @@ public class DevMenu
         _outputManager.AddLogEntry($"\nI found player(s): ");
         foreach (Player player in results)
         {
-            _outputManager.AddLogEntry($"   - {player.Name}");
+            if(player.Room == room)
+            {
+                _outputManager.AddLogEntry($"   - {player.Name}");
+            }
         }
         _outputManager.GetUserInput("Press Enter To Continue");
     }
@@ -557,11 +567,16 @@ public class DevMenu
     public void GroupPlayersByRoom()
     {
         var allPlayers = _context.Players.ToList();
+        //foreach (var room in allPlayers)
+        //{
+        //    Thread.Sleep(10);
+        //    _outputManager.AddLogEntry($"{room.Name}");
+        //}
         var allRooms = _context.Rooms.ToList();
         var playerGroups = allPlayers.GroupBy(p => p.RoomId, (RoomId) => new {Key = RoomId});
+        _outputManager.ClearScreen();
         foreach (var room in playerGroups)
         {
-            _outputManager.ClearScreen();
             _outputManager.AddLogEntry($"{allRooms.Where(r => r.Id == room.Key).FirstOrDefault().Name}");
             var playersInRoom = allPlayers.Where(p => p.RoomId == room.Key);
             foreach (var player in playersInRoom)
@@ -590,7 +605,7 @@ public class DevMenu
                         _outputManager.AddLogEntry($"{result.Name} is owned by: ");
                         foreach (var player in players)
                         {
-                            _outputManager.AddLogEntry($"   - {player.Name}");
+                            _outputManager.AddLogEntry($"   - {player.Name} in {player.Room.Name}");
                         }
                     }
                 }

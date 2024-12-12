@@ -49,10 +49,14 @@ public class GameEngine
             _mapManager.DisplayMap();
             _outputManager.ClearScreen();
             _outputManager.AddLogEntry($"{_player.Name} is at {_player.Health}/{_player.MaxHealth} health.");
-            _outputManager.AddLogEntry($"{_player.Room.Name} has {_context.Monsters.Where(m => m.RoomId == _player.RoomId).Count()} monsters.");
+            var monstersInRoom = _context.Monsters.Where(m => m.RoomId == _player.RoomId).ToList();
+            _outputManager.AddLogEntry($"{_player.Room.Name} has {monstersInRoom.Where(m => m.Health > 0).Count()} monsters.");
             foreach( var monster in _context.Monsters.Where(m => m.RoomId == _player.RoomId).ToList())
             {
-                _outputManager.AddLogEntry($"   {monster.MonsterType} - {monster.Name}");
+                if (monster.Health > 0)
+                {
+                    _outputManager.AddLogEntry($"   {monster.MonsterType} - {monster.Name}");
+                }
             }
 
             _outputManager.AddLogEntry("\n1. Attack (You can't run away from battles!)");
