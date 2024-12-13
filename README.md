@@ -1,4 +1,34 @@
-﻿### FINAL PRESENTATION - ConsoleRPG EF Core Application
+﻿Going for a - and a few a+ things.
+
+all functionality should be added.
+
+I added mana, and a few extra stats to players.
+Monsters should have base damage.
+
+PVP cannot be exited before winning or loosing.
+Dying leads to perma death.
+
+Inventory and Items now has a bridge table to allow a many to many relationship. 
+
+Abilities now have magic abilities, defense abilities, and attack abilities. Shove ability has been removed, and replaced with attack ability.
+Abilities can apply status effects, only defense bonus exists right now, so its very badly implemented.
+
+Monsters have room id's now and should always be in their designated room.
+Monsters are dead, until the game restarts.
+
+Players are like save files.
+
+The map navigation system uses the numpad and keypresses for ease of use. (sorry if you have a <100% keyboard) 
+
+
+
+
+
+
+
+
+
+### FINAL PRESENTATION - ConsoleRPG EF Core Application
 
 #### Basic Required functionality:
 - **Add a new Character to the database**
